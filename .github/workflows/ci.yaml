@@ -1,0 +1,34 @@
+name: CI
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Check Formatting with Ruff
+        run: ruff format --diff --target-version=py313
+
+      - name: Lint with Ruff
+        run: ruff check --output-format=github --target-version=py313
+
+      - name: Type Check with Pyright
+        run: pyright
+
+      - name: Run Tests with Pytest
+        run: pytest

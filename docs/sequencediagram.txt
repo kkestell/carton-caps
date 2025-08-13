@@ -1,0 +1,45 @@
+title User Referral & Deep Linking Flow
+
+participant "Referrer (User A)" as Referrer
+participant "Referred User (User B)" as ReferredUser
+participant App
+participant "AppsFlyer SDK" as SDK
+participant "AppsFlyer Server" as AF_Server
+participant "Backend API" as API
+
+alt Generate Invite Link
+
+    Referrer->App: Taps "Invite Friends"
+    App->SDK: AppsFlyerShareInviteHelper.generateInviteUrl\n(deep_link_sub: referralCode, deep_link_value: destination)
+    note right of SDK: SDK communicates with AppsFlyer to create the link.
+    SDK-->App: Returns generated invite URL
+    App-->Referrer: Displays shareable invite URL
+
+end
+
+alt Respond to Deferred Deep Link
+
+    ReferredUser->App: Clicks invite link, installs & opens app
+    note over ReferredUser, App: User is redirected via AppsFlyer to the App Store.
+    App->SDK: Initializes on first launch
+    SDK->AF_Server: Requests attribution data
+    AF_Server-->SDK: Provides deferred deep link payload
+    SDK->App: didResolveDeepLink(deepLinkObject)
+    App->App: Extracts referral code from deepLinkObject
+    App-->ReferredUser: Displays customized sign-up page
+    ReferredUser->App: Completes registration
+    App->API: POST /users (with referralCode)
+    API-->App: 201 Created
+    App-->ReferredUser: Registration complete
+
+end
+
+alt View Referrals
+
+    Referrer->App: Navigates to "My Referrals" screen
+    App->API: GET /referrals
+    API-->App: Returns JSON list of referred users
+    App->App: Renders the referral list UI
+    App-->Referrer: Displays list of referrals (e.g., "Eugene Tooms")
+
+end
