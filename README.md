@@ -7,7 +7,7 @@
   Written overview and sequence diagram of the full deferred deep linking workflow, and notes on preventing abuse.
 
 
-* **[API Documentation](docs/deferred-deep-linking.md)**
+* **[API Documentation](docs/api.md)**
  
   API documentation for frontend and backend developers for the new Carton Caps referral feature.
 
