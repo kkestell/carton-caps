@@ -4,7 +4,7 @@
 
 * **[Deferred Deep Linking](docs/deferred-deep-linking.md)**
   
-  An overview of the full deferred deep linking workflow and notes on preventing abuse.
+  Written overview and sequence diagram of the full deferred deep linking workflow, and notes on preventing abuse.
 
 
 * **[API Documentation](docs/deferred-deep-linking.md)**
@@ -38,6 +38,8 @@ Make a request:
 $ curl http://127.0.0.1:5000/users/1/referrals
 ```
 
+<small>A number of users are created automatically for testing. See "Initialize the database" below for the full listing.</small>
+
 ### Local Development
 
 Create and activate a virtual environment:
@@ -54,7 +56,7 @@ $ pip install -r requirements.txt
 $ pip install -e .
 ```
 
-Tell Quart where to find the app.
+Tell Quart where to find the app:
 
 ```console
 $ export QUART_APP=src.carton_caps.app:create_app
@@ -64,6 +66,16 @@ Initialize the database:
 
 ```console
 $ quart init-db
+id | name                | referral_code | referrals
+----------------------------------------------------
+1  | Fox Mulder          | TRUSTNO1      | 4
+2  | Dana Scully         | SCULLYMD      | 0
+3  | Walter Skinner      | SKINNERAD     | 2
+4  | C.G.B. Spender      | CANCERMAN     | 1
+5  | The Flukeman        | FLUKEMAN      | 0
+6  | Eugene Victor Tooms | LIVERLVR      | 0
+7  | The Great Mutato    | CHERFAN       | 0
+8  | Leonard Betts       | REGENERATE    | 0
 ```
 
 Run the API:

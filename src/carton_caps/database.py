@@ -198,3 +198,35 @@ class Database:
         await self.create_referral(source_user_id=mulder.id, target_user_id=tooms.id, status="confirmed")
         await self.create_referral(source_user_id=mulder.id, target_user_id=mutato.id, status="pending")
         await self.create_referral(source_user_id=mulder.id, target_user_id=betts.id, status="pending")
+
+        # Print some helpful debug output for testing...
+
+        conn = await self.get_conn()
+        async with conn.execute(
+            """
+            SELECT
+                u.id,
+                u.name,
+                u.referral_code,
+                COUNT(r.id) as referral_count
+            FROM users u
+            LEFT JOIN referrals r ON u.id = r.source_user_id
+            GROUP BY u.id
+            ORDER BY u.id
+            """
+        ) as cursor:
+            rows = await cursor.fetchall()
+
+        max_name_len = max(len(row["name"]) for row in rows)
+        max_code_len = max(len(row["referral_code"]) for row in rows)
+
+        name_width = max(max_name_len, len("name"))
+        code_width = max(max_code_len, len("referral_code"))
+
+        header = f"id | {'name':<{name_width}} | {'referral_code':<{code_width}} | referrals"
+        print(header)
+        print("-" * len(header))
+        for row in rows:
+            print(
+                f"{row['id']:<2} | {row['name']:<{name_width}} | {row['referral_code']:<{code_width}} | {row['referral_count']}"
+            )

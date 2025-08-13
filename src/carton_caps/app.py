@@ -57,7 +57,6 @@ async def init_db_command():
         await db.init_db()
         # Create realistic seed data for testing.
         await db.seed_db()
-        click.echo("Initialized the database.")
 
 
 def create_app(test_config=None, **kwargs):
