@@ -108,6 +108,20 @@ async def test_create_user_duplicate_name_fails(db: Database):
 
 
 @pytest.mark.asyncio
+async def test_create_referral_duplicate_target_user_fails(db: Database):
+    """Tests that creating a referral with a duplicate target user raises an IntegrityError."""
+    # Arrange
+    source_user1 = await db.create_user("Fox Mulder", "TRUSTNO1")
+    source_user2 = await db.create_user("Dana Scully", "SCULLYMD")
+    target_user = await db.create_user("Walter Skinner", "SKINNERAD")
+    await db.create_referral(source_user1.id, target_user.id, "confirmed")
+
+    # Act / Assert
+    with pytest.raises(aiosqlite.IntegrityError):
+        await db.create_referral(source_user2.id, target_user.id, "pending")
+
+
+@pytest.mark.asyncio
 async def test_create_referral_success(db: Database):
     """Tests successful creation of a new referral."""
     # Arrange
